@@ -99,13 +99,12 @@ namespace AoC
 			Console.WriteLine("Day 3 - Part 1: " + trees[1]);
 			Console.WriteLine("Day 3 - Part 2: " + part2Answer);
 			*/
-
+			/*
 			//Day 4 - Parts 1 & 2
 			//Declare
 			var passportLines = File.ReadAllText("Day4.txt").Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 			var requiredFields = new List<string>() { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
 			var passports = new List<Dictionary<string,string>>();
-
 			var realPassports = new List<Passport>();
 
 			//Process
@@ -155,7 +154,71 @@ namespace AoC
 
 			Console.WriteLine("Day 4 - Part 1: " + validPart1Passports.Count());
 			Console.WriteLine("Day 4 - Part 2: " + validPassportsPart2);
+			*/
 
+			var boardingPasses = File.ReadAllLines("Day5.txt").ToArray();
+			int highestSeatId = 0;
+			var seatIDs = new List<int>();
+
+			foreach (var pass in boardingPasses)
+			{
+				//Row Low & High values
+				int low = 0;
+				int high = 127;
+				int row = 0;
+				int col = 0;
+				for (int i = 0; i < pass.Length; i++)
+				{
+					int thisTime = (high - low + 1) / 2;
+					if (i == 6 || i == 9)
+					{
+						if (i == 6)
+						{
+							if (pass[i] == 'F')
+								row = low;
+							else
+								row = high;
+						}
+						else
+						{
+							if (pass[i] == 'L')
+								col = low;
+							else
+								col = high;
+						}
+
+						//Update ranges for the Column.
+						low = 0;
+						high = 7;
+					}
+					else
+					{
+						if (pass[i] == 'F' || pass[i] == 'L')
+						{
+							high -= thisTime;
+						}
+						else if (pass[i] == 'B' || pass[i] == 'R')
+						{
+							low += thisTime;
+						}
+					}
+				}
+
+				//Calculate SeatID
+				int seatId = row * 8 + col;
+				if (seatId > highestSeatId)
+				{
+					highestSeatId = seatId;
+				}
+
+				seatIDs.Add(seatId);
+			}
+
+			Console.WriteLine("Day 5 - Part 1: " + highestSeatId);
+
+			var sortedSeatIDs = seatIDs.OrderBy(x => x).ToList();
+			List<int> gaps = Enumerable.Range(sortedSeatIDs.First(), sortedSeatIDs.Count()).Except(sortedSeatIDs).ToList();
+			Console.WriteLine("Day 5 - Part 2: " + gaps.First());
 		}
 	}
 }
