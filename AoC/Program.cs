@@ -106,6 +106,8 @@ namespace AoC
 			var requiredFields = new List<string>() { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
 			var passports = new List<Dictionary<string,string>>();
 
+			var realPassports = new List<Passport>();
+
 			//Process
 			foreach (var item in passportLines)
 			{
@@ -144,6 +146,9 @@ namespace AoC
 
 				if (!Regex.IsMatch(item["pid"], "^[0-9]{9}$"))
 					continue;
+
+				var newPassport = new Passport(item);
+				realPassports.Add(newPassport);
 
 				validPassportsPart2++;
 			}
