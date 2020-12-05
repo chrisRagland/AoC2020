@@ -11,15 +11,19 @@ namespace AoC
 	{
 		static void Main(string[] args)
 		{
-			/*
+			Day6();
+		}
+
+		private static void Day1()
+		{
 			// Day 1 - Part 1
 			var hsLines = File.ReadAllLines("Day1.txt").Select(x => Convert.ToInt32(x)).OrderBy(x => x).ToHashSet<int>();
 			bool found = false;
 			foreach (var item in hsLines)
 			{
-				if (hsLines.Contains(2020-item))
+				if (hsLines.Contains(2020 - item))
 				{
-					Console.WriteLine("Day 1 - Part 1: " + (item * (2020-item)));
+					Console.WriteLine("Day 1 - Part 1: " + (item * (2020 - item)));
 					found = true;
 				}
 				if (found)
@@ -32,7 +36,7 @@ namespace AoC
 			{
 				foreach (var innerItem in hsLines)
 				{
-					if (hsLines.Contains(2020-item-innerItem))
+					if (hsLines.Contains(2020 - item - innerItem))
 					{
 						Console.WriteLine("Day 1 - Part 2: " + (item * innerItem * (2020 - item - innerItem)));
 						found = true;
@@ -43,8 +47,11 @@ namespace AoC
 				if (found)
 					break;
 			}
-			*/
-			/*
+
+		}
+
+		private static void Day2()
+		{
 			var passwords = File.ReadAllLines("Day2.txt").ToArray();
 			var valid = 0;
 			// Day 2 - Part 1
@@ -71,12 +78,14 @@ namespace AoC
 				var firstLocation = Convert.ToInt32(locationRequirements[0]) - 1;
 				var secondLocation = Convert.ToInt32(locationRequirements[1]) - 1;
 				char requiredChar = passwordComponents[1][0];
-				if((passwordComponents[2][firstLocation] == requiredChar) ^ (passwordComponents[2][secondLocation] == requiredChar))
+				if ((passwordComponents[2][firstLocation] == requiredChar) ^ (passwordComponents[2][secondLocation] == requiredChar))
 					valid++;
 			}
 			Console.WriteLine("Day 2 - Part 2: " + valid);
-			*/
-			/*
+		}
+
+		private static void Day3()
+		{
 			//Day 3 - Part 1 & Part 2
 			var sleddingLines = File.ReadAllLines("Day3.txt").ToArray();
 			var lineLength = sleddingLines[0].Length;
@@ -95,16 +104,18 @@ namespace AoC
 						trees[j]++;
 				}
 			}
-			var part2Answer = trees.Aggregate(1,(x,y) => x * y);
+			var part2Answer = trees.Aggregate(1, (x, y) => x * y);
 			Console.WriteLine("Day 3 - Part 1: " + trees[1]);
 			Console.WriteLine("Day 3 - Part 2: " + part2Answer);
-			*/
-			/*
+		}
+
+		private static void Day4()
+		{
 			//Day 4 - Parts 1 & 2
 			//Declare
 			var passportLines = File.ReadAllText("Day4.txt").Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 			var requiredFields = new List<string>() { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
-			var passports = new List<Dictionary<string,string>>();
+			var passports = new List<Dictionary<string, string>>();
 			var realPassports = new List<Passport>();
 
 			//Process
@@ -154,71 +165,27 @@ namespace AoC
 
 			Console.WriteLine("Day 4 - Part 1: " + validPart1Passports.Count());
 			Console.WriteLine("Day 4 - Part 2: " + validPassportsPart2);
-			*/
+		}
 
+		private static void Day5()
+		{
 			var boardingPasses = File.ReadAllLines("Day5.txt").ToArray();
-			int highestSeatId = 0;
-			var seatIDs = new List<int>();
-
-			foreach (var pass in boardingPasses)
+			var seatIds = new List<int>();
+			foreach (var item in boardingPasses)
 			{
-				//Row Low & High values
-				int low = 0;
-				int high = 127;
-				int row = 0;
-				int col = 0;
-				for (int i = 0; i < pass.Length; i++)
-				{
-					int thisTime = (high - low + 1) / 2;
-					if (i == 6 || i == 9)
-					{
-						if (i == 6)
-						{
-							if (pass[i] == 'F')
-								row = low;
-							else
-								row = high;
-						}
-						else
-						{
-							if (pass[i] == 'L')
-								col = low;
-							else
-								col = high;
-						}
-
-						//Update ranges for the Column.
-						low = 0;
-						high = 7;
-					}
-					else
-					{
-						if (pass[i] == 'F' || pass[i] == 'L')
-						{
-							high -= thisTime;
-						}
-						else if (pass[i] == 'B' || pass[i] == 'R')
-						{
-							low += thisTime;
-						}
-					}
-				}
-
-				//Calculate SeatID
-				int seatId = row * 8 + col;
-				if (seatId > highestSeatId)
-				{
-					highestSeatId = seatId;
-				}
-
-				seatIDs.Add(seatId);
+				int row = Convert.ToInt32(item.Substring(0, 7).Replace('F', '0').Replace('B', '1'), 2);
+				int col = Convert.ToInt32(item.Substring(7, 3).Replace('L', '0').Replace('R', '1'), 2);
+				seatIds.Add(row * 8 + col);
 			}
-
-			Console.WriteLine("Day 5 - Part 1: " + highestSeatId);
-
-			var sortedSeatIDs = seatIDs.OrderBy(x => x).ToList();
+			var sortedSeatIDs = seatIds.OrderBy(x => x).ToList();
 			List<int> gaps = Enumerable.Range(sortedSeatIDs.First(), sortedSeatIDs.Count()).Except(sortedSeatIDs).ToList();
+			Console.WriteLine("Day 5 - Part 1: " + sortedSeatIDs.Last());
 			Console.WriteLine("Day 5 - Part 2: " + gaps.First());
+		}
+
+		private static void Day6()
+		{
+
 		}
 	}
 }
