@@ -173,9 +173,7 @@ namespace AoC
 			var seatIds = new List<int>();
 			foreach (var item in boardingPasses)
 			{
-				int row = Convert.ToInt32(item.Substring(0, 7).Replace('F', '0').Replace('B', '1'), 2);
-				int col = Convert.ToInt32(item.Substring(7, 3).Replace('L', '0').Replace('R', '1'), 2);
-				seatIds.Add(row * 8 + col);
+				seatIds.Add(Convert.ToInt32(item.Replace('F', '0').Replace('B', '1').Replace('L', '0').Replace('R', '1'), 2));
 			}
 			var sortedSeatIDs = seatIds.OrderBy(x => x).ToList();
 			List<int> gaps = Enumerable.Range(sortedSeatIDs.First(), sortedSeatIDs.Count()).Except(sortedSeatIDs).ToList();
