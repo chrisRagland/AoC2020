@@ -183,7 +183,34 @@ namespace AoC
 
 		private static void Day6()
 		{
+			var daySixText = File.ReadAllText("Day6.txt").Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+			
+			var count = 0;
+			foreach (var item in daySixText)
+			{
+				var clean = item.Replace("\r\n", "");
+				var cleanCount = clean.GroupBy(x => x).Distinct().Count();
+				count += cleanCount;
+			}
+			Console.WriteLine("Day 6 - Part 1: " + count);
 
+			var countTwo = 0;
+			foreach (var item in daySixText)
+			{
+				List<List<char>> answers = new List<List<char>>();
+				foreach (var innerItem in item.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+				{
+					answers.Add(innerItem.Select(x => x).Distinct().ToList());
+				}
+
+				List<char> common = answers[0];
+				for (int i = 1; i < answers.Count(); i++)
+				{
+					common = common.Intersect(answers[i]).ToList();
+				}
+				countTwo += common.Count();
+			}
+			Console.WriteLine("Day 6 - Part 2: " + countTwo);
 		}
 	}
 }
