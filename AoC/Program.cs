@@ -11,7 +11,7 @@ namespace AoC
 	{
 		static void Main(string[] args)
 		{
-			Day6();
+			Day7();
 		}
 
 		private static void Day1()
@@ -183,19 +183,20 @@ namespace AoC
 
 		private static void Day6()
 		{
-			var daySixText = File.ReadAllText("Day6.txt").Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-			
-			var count = 0;
-			foreach (var item in daySixText)
+			var customsAnswers = File.ReadAllText("Day6.txt").Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+			var partOneCount = 0;
+
+			foreach (var groupAnswer in customsAnswers)
 			{
-				var clean = item.Replace("\r\n", "");
-				var cleanCount = clean.GroupBy(x => x).Distinct().Count();
-				count += cleanCount;
+
+				var clean = groupAnswer.Replace("\r\n", "");
+				var cleanCount = clean.Select(x => x).Distinct().Count();
+				partOneCount += cleanCount;
 			}
-			Console.WriteLine("Day 6 - Part 1: " + count);
+			Console.WriteLine("Day 6 - Part 1: " + partOneCount);
 
 			var countTwo = 0;
-			foreach (var item in daySixText)
+			foreach (var item in customsAnswers)
 			{
 				List<List<char>> answers = new List<List<char>>();
 				foreach (var innerItem in item.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
@@ -211,6 +212,99 @@ namespace AoC
 				countTwo += common.Count();
 			}
 			Console.WriteLine("Day 6 - Part 2: " + countTwo);
+		}
+
+		private static Dictionary<Bag, List<Bag>> bags;
+		private static List<string> searched;
+
+		private static void Day7()
+		{
+			var bagsText = File.ReadAllText("Day7.txt").Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+			int partOneCount = 0;
+			int partTwoCount = 0;
+			searched = new List<string>();
+			bags = new Dictionary<Bag, List<Bag>>();
+
+			foreach (var item in bagsText)
+			{
+				var input = item.Split(" contain ", StringSplitOptions.RemoveEmptyEntries);
+				var holds = input[1].Replace('.',' ').Split(',', StringSplitOptions.RemoveEmptyEntries);
+				var thisHolds = new List<Bag>();
+
+				foreach (var bagtext in holds)
+				{
+					if (bagtext != "no other bags")
+					{
+						var bagname = bagtext.Trim();
+						int count = 1;
+						if (Regex.IsMatch(bagname, "^[0-9]"))
+						{
+							count = Convert.ToInt32(bagname.Substring(0, bagname.IndexOf(' ')));
+							bagname = bagname.Substring(bagname.IndexOf(' ')).Trim();
+						}
+
+						if (bagname.EndsWith("s"))
+							bagname = bagname.Substring(0, bagname.Length - 1);
+
+						thisHolds.Add(new Bag() { Count = count, Name = bagname });
+					}else
+					{
+						thisHolds.Add(new Bag() { Count = 1, Name = "no other bag" });
+					}
+				}
+
+				var containerName = input[0];
+				if (containerName.EndsWith('s'))
+				{
+					containerName = containerName.Substring(0, containerName.Length - 1);
+				}
+
+				bags.Add(new Bag() { Count = 1, Name = containerName }, thisHolds);
+			}
+
+			partOneCount = NestedBags("shiny gold bag");
+			Console.WriteLine("Day 7 - Part 1: " + partOneCount);
+
+			partTwoCount = BagsInGold("shiny gold bag");
+			Console.WriteLine("Day 7 - Part 2: " + partTwoCount);
+		}
+
+		public static int NestedBags(string bagToFind)
+		{
+			var currentNesting = 0;
+			searched.Add(bagToFind);
+
+			foreach (var item in bags)
+			{
+				if (item.Value.Any(x => x.Name.Equals(bagToFind)))
+				{
+					if (!searched.Contains(item.Key.Name))
+					{
+						currentNesting++;
+						currentNesting += NestedBags(item.Key.Name);
+					}
+				}
+			}
+
+			return currentNesting;
+		}
+
+		public static int BagsInGold(string bagToFind)
+		{
+			var currentTotal = 0;
+
+			var currentBag = bags.Where(x => x.Key.Name.Equals(bagToFind)).Select(x => x.Value).FirstOrDefault();
+			foreach (var item in currentBag)
+			{
+				if (item.Name == "no other bag")
+					return 0;
+				else
+				{
+					currentTotal += ((item.Count * BagsInGold(item.Name)) + item.Count);
+				}
+			}
+
+			return currentTotal;
 		}
 	}
 }
