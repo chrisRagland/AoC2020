@@ -11,7 +11,7 @@ namespace AoC
 	{
 		static void Main(string[] args)
 		{
-			Day7();
+			Day8();
 		}
 
 		private static void Day1()
@@ -228,7 +228,7 @@ namespace AoC
 			foreach (var item in bagsText)
 			{
 				var input = item.Split(" contain ", StringSplitOptions.RemoveEmptyEntries);
-				var holds = input[1].Replace('.',' ').Split(',', StringSplitOptions.RemoveEmptyEntries);
+				var holds = input[1].Replace('.', ' ').Split(',', StringSplitOptions.RemoveEmptyEntries);
 				var thisHolds = new List<Bag>();
 
 				foreach (var bagtext in holds)
@@ -247,7 +247,7 @@ namespace AoC
 							bagname = bagname.Substring(0, bagname.Length - 1);
 
 						thisHolds.Add(new Bag() { Count = count, Name = bagname });
-					}else
+					} else
 					{
 						thisHolds.Add(new Bag() { Count = 1, Name = "no other bag" });
 					}
@@ -305,6 +305,23 @@ namespace AoC
 			}
 
 			return currentTotal;
+		}
+
+		public static void Day8()
+		{
+			var input = File.ReadAllText("Day8.txt").Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+			var partOneComputer = new Computer(input);
+			partOneComputer.Run();
+			Console.WriteLine("Day 8 - Part 1: " + partOneComputer.Output);
+
+			var partTwoComputer = new Computer(input);
+			partTwoComputer.FixInstructions(
+				new List<Computer.CommandName>() {
+					Computer.CommandName.jmp,
+					Computer.CommandName.nop
+			});
+			Console.WriteLine("Day 8 - Part 2: " + partTwoComputer.Output);
 		}
 	}
 }
