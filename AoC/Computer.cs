@@ -69,12 +69,12 @@ namespace AoC
 							var oldCommand = Instructions[currentIndex];
 							Instructions[currentIndex] = new Instruction() { Command = item, Value = Instructions[currentIndex].Value };
 
+							CurrentInstruction = 0;
+
 							Run();
 
-							if (CurrentInstruction == (Instructions.Count - 1))
+							if (CurrentInstruction == Instructions.Count)
 							{
-								Console.WriteLine("All Cleaned Up!");
-								Console.WriteLine(currentIndex);
 								return;
 							}
 							else
@@ -92,27 +92,25 @@ namespace AoC
 			var visitedCommandLocation = new List<int>();
 			Output = 0;
 
-			for (int i = 0; i < Instructions.Count; i++)
+			for (; CurrentInstruction < Instructions.Count; CurrentInstruction++)
 			{
-				if (visitedCommandLocation.Contains(i))
+				if (visitedCommandLocation.Contains(CurrentInstruction))
 					return;
 
-				CurrentInstruction = i;
+				visitedCommandLocation.Add(CurrentInstruction);
 
-				visitedCommandLocation.Add(i);
-
-				switch (Instructions[i].Command)
+				switch (Instructions[CurrentInstruction].Command)
 				{
 					case CommandName.nop:
 						break;
 					case CommandName.acc:
-						Output += Instructions[i].Value;
+						Output += Instructions[CurrentInstruction].Value;
 						break;
 					case CommandName.jmp:
-						if (Instructions[i].Value == -1)
+						if (Instructions[CurrentInstruction].Value == -1)
 							return;
 
-						i += Instructions[i].Value - 1;
+						CurrentInstruction += Instructions[CurrentInstruction].Value - 1;
 						break;
 					default:
 						break;
