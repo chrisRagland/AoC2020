@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AoC
@@ -10,7 +11,7 @@ namespace AoC
 	{
 		static void Main(string[] args)
 		{
-			var day = new Day19();
+			var day = new Day21();
 			day.RunDay();
 		}
 	}
